@@ -62,8 +62,11 @@ class UserDatabaseFunctions :
             cur =  conn.cursor()
             cur.execute(sql,(username,))
             row = cur.fetchone()
-            user = User(name=row[0],username=row[1],password=[2])
-            return user
+            if row != None:
+                user = User(name=row[1],username=row[2],password=row[3])
+                return user
+            else:
+                return None
         
         except Error as e:
             print(e)
