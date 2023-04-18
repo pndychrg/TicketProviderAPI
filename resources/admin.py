@@ -1,12 +1,12 @@
 from flask_restful import Resource,reqparse,abort,request
-from models.userModel import User
-from database.userDB import UserDatabaseFunctions
+from models.adminModel import Admin
+from database.adminDB import AdminDatabaseFunctions
 from flask import jsonify
 import jwt
 from functools import wraps
 from run import app
 # initiating userDatabseFunctions
-userDatabaseFunctions = UserDatabaseFunctions()
+adminDatabaseFunctions = AdminDatabaseFunctions()
 
 def token_required(f):
     @wraps(f)
@@ -21,7 +21,7 @@ def token_required(f):
         try:
             # decoding the payload to fetch the stored details
             data = jwt.decode(token, app.config['SECRET_KEY'])
-            current_user = userDatabaseFunctions.get_UserbyUsername(username=data['username'])
+            current_user = adminDatabaseFunctions.get_AdminbyUsername(username=data['username'])
         except:
             return jsonify({
                 'message' : 'Token is invalid !!'
@@ -30,41 +30,40 @@ def token_required(f):
         return  f(current_user, *args, **kwargs)
     return decorated
 
-class UserRegistration(Resource):
+class AdminRegistration(Resource):
     def post(self):
         # parser for registration
         parser = reqparse.RequestParser()
-        parser.add_argument('name',help='This field cannot be blank',required = True)
         parser.add_argument('username',help='This field cannot be blank',required = True)
         parser.add_argument('password',help='This field cannot be blank',required = True)
 
         data = parser.parse_args()
-        new_user = User(name=data['name'],username=data['username'],password=data['password'])
-        id = userDatabaseFunctions.add_User(user=new_user)
+        new_admin = Admin(username=data['username'],password=data['password'])
+        id = adminDatabaseFunctions.add_Admin(admin=new_admin)
         if id != False:
-            return {"message":"User Registered","id":id}
-        return {'message':"User already Exists"},400
+            return {"message":"Admin Registered","id":id}
+        return {'message':"Admin already Exists"},400
         
-class UserLogin(Resource):
+class AdminLogin(Resource):
     def post(self):
         # parser for login
         parser = reqparse.RequestParser()
         parser.add_argument('username',help='This field cannot be blank',required = True)
         parser.add_argument('password',help='This field cannot be blank',required = True)
         data = parser.parse_args()
-        user_db = userDatabaseFunctions.get_UserbyUsername(username= data['username'])
-        if user_db != None:
-            if(user_db.username==data['username'] and user_db.password==data['password']):
-                token = jwt.encode({'username':user_db.username},app.config['SECRET_KEY'])
+        admin_db = adminDatabaseFunctions.get_AdminbyUsername(username= data['username'])
+        if admin_db != None:
+            if(admin_db.username==data['username'] and admin_db.password==data['password']):
+                token = jwt.encode({'username':admin_db.username},app.config['SECRET_KEY'])
                 return {'message':"User Login","token":token},200
             else:
                 return {'message':"Wrong Credentials"},401
         return {'message':"User doesn't exist"},401
     
-class UserLogoutAccess(Resource):
-    def post(self):
-        return {'message':"User Logout"}
+# class UserLogoutAccess(Resource):
+#     def post(self):
+#         return {'message':"User Logout"}
     
-class TokenRefresh(Resource):
-    def post(self):
-        return {'message': 'Token refresh'}
+# class TokenRefresh(Resource):
+#     def post(self):
+#         return {'message': 'Token refresh'}

@@ -14,6 +14,11 @@ api.add_resource(UserRegistration,'/register')
 api.add_resource(UserLogoutAccess,'/logout')
 api.add_resource(TokenRefresh,'/token/refresh')
 
+from resources.admin import *
+api.add_resource(AdminLogin,'/adminLogin')
+api.add_resource(AdminRegistration,'/adminRegister')
+
+
 
 if __name__ == "__main__":
     init_Database()
