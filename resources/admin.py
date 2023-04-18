@@ -1,12 +1,12 @@
 from flask_restful import Resource,reqparse,abort,request
 from models.adminModel import Admin
-from database.adminDB import AdminDatabaseFunctions
+from database.adminDB import AdminDB
 from flask import jsonify
 import jwt
 from functools import wraps
 from run import app
 # initiating userDatabseFunctions
-adminDatabaseFunctions = AdminDatabaseFunctions()
+adminDatabaseFunctions = AdminDB()
 
 def token_required(f):
     @wraps(f)

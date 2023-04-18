@@ -3,7 +3,7 @@ from sqlite3 import Error
 import os
 from models.adminModel import Admin
 
-class AdminDatabaseFunctions :
+class AdminDB :
     
     # create Admin Table
     def createAdminTable(self):
