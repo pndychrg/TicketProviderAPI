@@ -13,3 +13,11 @@ class Venue:
         for venue in listVenues:
             ret_VenueList.append(Venue(id=venue[0],name=venue[1],place=venue[2],capacity=venue[3]))
         return ret_VenueList
+
+    def toJson(self):
+        return {
+            "id":self.id,
+            "name":self.name,
+            "place":self.place,
+            "capacity":self.capacity
+        }

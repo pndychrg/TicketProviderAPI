@@ -2,33 +2,12 @@ from flask_restful import Resource,reqparse,abort,request
 from models.adminModel import Admin
 from database.adminDB import AdminDB
 from flask import jsonify
-import jwt
+from flask_jwt_extended import create_access_token
 from functools import wraps
 from run import app
 # initiating userDatabseFunctions
 adminDatabaseFunctions = AdminDB()
 
-def token_required(f):
-    @wraps(f)
-    def decorated(*args, **kwargs):
-        token = None
-        # jwt is passed in the request header
-        if 'x-access-token' in request.headers:
-            token = request.headers['x-access-token']
-        # return 401 if token is not passed
-        if not token:
-            return jsonify({'message' : 'Token is missing !!'}), 401
-        try:
-            # decoding the payload to fetch the stored details
-            data = jwt.decode(token, app.config['SECRET_KEY'])
-            current_user = adminDatabaseFunctions.get_AdminbyUsername(username=data['username'])
-        except:
-            return jsonify({
-                'message' : 'Token is invalid !!'
-            }), 401
-        # returns the current logged in users context to the routes
-        return  f(current_user, *args, **kwargs)
-    return decorated
 
 class AdminRegistration(Resource):
     def post(self):
@@ -54,12 +33,12 @@ class AdminLogin(Resource):
         admin_db = adminDatabaseFunctions.get_AdminbyUsername(username= data['username'])
         if admin_db != None:
             if(admin_db.username==data['username'] and admin_db.password==data['password']):
-                token = jwt.encode({'username':admin_db.username},app.config['SECRET_KEY'])
+                token = create_access_token(identity=data['username'])
                 return {'message':"User Login","token":token},200
             else:
                 return {'message':"Wrong Credentials"},401
         return {'message':"User doesn't exist"},401
-    
+
 # class UserLogoutAccess(Resource):
 #     def post(self):
 #         return {'message':"User Logout"}

@@ -1,3 +1,4 @@
+from database.showsDB import ShowsDB
 from database.userDB import UserDatabaseFunctions
 from database.adminDB import AdminDB
 from database.venueDB import VenueDB
@@ -10,3 +11,5 @@ def init_Database():
     adminDatabaseFunctions.createAdminTable()
     venueDatabaseFunctions = VenueDB()
     venueDatabaseFunctions.create_venueTable()
+    showDatabaseFunctions = ShowsDB()
+    showDatabaseFunctions.create_showTable()
