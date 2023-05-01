@@ -3,7 +3,7 @@ from sqlite3 import Error
 from models.showModel import Show
 
 class ShowsDB:
-    def create_showTable():
+    def create_showTable(self):
         # tags not implemented yet 
         #TODO: add tags
         create_show_table = '''CREATE TABLE IF NOT EXISTS shows(
@@ -41,12 +41,12 @@ class ShowsDB:
             conn.close()
     
     def addShow(self,show):
-        add_venue_query = '''INSERT INTO shows(name,rating,ticketPrice) VALUES(?,?,?)'''
+        add_show_query = '''INSERT INTO shows(name,rating,ticketPrice) VALUES(?,?,?)'''
         try:
             # connnect
             conn =  sqlite3.connect("ticketProvider.db")
             cur =  conn.cursor()
-            cur.execute(add_venue_query,show.returnSet())
+            cur.execute(add_show_query,show.returnSet())
             conn.commit()
             return cur.lastrowid
         except Error as e:

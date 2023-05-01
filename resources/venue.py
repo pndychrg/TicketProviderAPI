@@ -1,7 +1,7 @@
 from flask_restful import Resource,reqparse,request
+from flask_jwt_extended import jwt_required
 from models.venueModel import Venue
 from database.venueDB import VenueDB
-from flask_jwt_extended import jwt_required
 
 #initialising Venue Database Functions
 venueDB = VenueDB()
@@ -31,3 +31,5 @@ class GetAllVenue(Resource):
         for venue in venueList:
             ret_Json.append(venue.toJson())
         return ret_Json,200
+
+#TODO GET VENUE BY ID

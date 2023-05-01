@@ -24,6 +24,10 @@ from resources.venue import *
 api.add_resource(AddVenue,'/venue/addVenue')
 api.add_resource(GetAllVenue,'/venue/getAllVenues')
 
+from resources.show import *
+api.add_resource(AddShow,'/show/addShow')
+api.add_resource(GetAllShows,'/show/getAllShows')
+
 if __name__ == "__main__":
     init_Database()
     app.run(debug=True)

@@ -19,3 +19,11 @@ class Show:
         for show in listShows:
             ret_ShowList.append(Show.fromArray(show))
         return ret_ShowList
+    
+    def toJson(self):
+        return {
+            "id":self.id,
+            "name":self.name,
+            "rating":self.rating,
+            "ticketPrice":self.ticketPrice
+        }
