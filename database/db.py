@@ -2,7 +2,7 @@ from database.showsDB import ShowsDB
 from database.userDB import UserDatabaseFunctions
 from database.adminDB import AdminDB
 from database.venueDB import VenueDB
-from models.venueModel import Venue
+from database.ticketDB import TicketsDB
 
 def init_Database():
     userDatabaseFunctions = UserDatabaseFunctions()
@@ -13,3 +13,6 @@ def init_Database():
     venueDatabaseFunctions.create_venueTable()
     showDatabaseFunctions = ShowsDB()
     showDatabaseFunctions.create_showTable()
+    ticketDatabaseFunctions = TicketsDB()
+    ticketDatabaseFunctions.create_ticketTable()
+    ticketDatabaseFunctions.create_trigger()

@@ -28,6 +28,10 @@ from resources.show import *
 api.add_resource(AddShow,'/show/addShow')
 api.add_resource(GetAllShows,'/show/getAllShows')
 
+from resources.tickets import *
+api.add_resource(AddTicket,'/ticket/addTicket')
+api.add_resource(GetAllTickets,'/ticket/getAllTickets')
+
 if __name__ == "__main__":
     init_Database()
     app.run(debug=True)

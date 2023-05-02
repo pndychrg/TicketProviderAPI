@@ -14,11 +14,14 @@ class AddShow(Resource):
         parser.add_argument("name",help="This Field is mandatory",required = True)
         parser.add_argument("rating",help="This Field is mandatory",required = True)
         parser.add_argument("ticketPrice",help="This Field is mandatory",required = True)
-
+        parser.add_argument("bookedSeats",help="This Field is mandatory",required = True)
+        parser.add_argument("isFull",help="This Field is mandatory",required = True)
+        parser.add_argument("venue_id",help="This Field is mandatory",required = True)
+        
         # extracting Data
         data = parser.parse_args()
         print(data,flush=True)
-        new_show = Show(name=data['name'],rating=data['rating'],ticketPrice=data['ticketPrice'])
+        new_show = Show(name=data['name'],rating=data['rating'],ticketPrice=data['ticketPrice'],bookedSeats=data['bookedSeats'],isFull=data['bookedSeats'],venue_id=data['venue_id'])
         id = showsDB.addShow(show=new_show)
         print(id,flush=True)
         if id!=None:

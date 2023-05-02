@@ -10,7 +10,11 @@ class ShowsDB:
                             show_id INTEGER PRIMARY KEY AUTOINCREMENT,
                             name TEXT NOT NULL,
                             rating INTEGER NOT NULL,
-                            ticketPrice INTEGER NOT NULL
+                            ticketPrice INTEGER NOT NULL,
+                            bookedSeats INTEGER NOT NULL,
+                            isFull INTEGER NOT NULL,
+                            venue_id INTEGER NOT NULL,
+                            FOREIGN KEY(venue_id) REFERENCES venues(venue_id)
                             );'''
     
         # CONNECTING THE DATABASE 
@@ -41,7 +45,7 @@ class ShowsDB:
             conn.close()
     
     def addShow(self,show):
-        add_show_query = '''INSERT INTO shows(name,rating,ticketPrice) VALUES(?,?,?)'''
+        add_show_query = '''INSERT INTO shows(name,rating,ticketPrice,bookedSeats,isFull,venue_id) VALUES(?,?,?,?,?,?)'''
         try:
             # connnect
             conn =  sqlite3.connect("ticketProvider.db")
