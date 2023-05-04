@@ -3,8 +3,8 @@ from models.adminModel import Admin
 from database.adminDB import AdminDB
 from flask import jsonify
 from flask_jwt_extended import create_access_token
-from functools import wraps
-from run import app
+from datetime import timedelta
+
 # initiating userDatabseFunctions
 adminDatabaseFunctions = AdminDB()
 
@@ -15,7 +15,6 @@ class AdminRegistration(Resource):
         parser = reqparse.RequestParser()
         parser.add_argument('username',help='This field cannot be blank',required = True)
         parser.add_argument('password',help='This field cannot be blank',required = True)
-
         data = parser.parse_args()
         new_admin = Admin(username=data['username'],password=data['password'])
         id = adminDatabaseFunctions.add_Admin(admin=new_admin)
@@ -33,16 +32,8 @@ class AdminLogin(Resource):
         admin_db = adminDatabaseFunctions.get_AdminbyUsername(username= data['username'])
         if admin_db != None:
             if(admin_db.username==data['username'] and admin_db.password==data['password']):
-                token = create_access_token(identity=data['username'])
+                token = create_access_token(identity=data['username'],expires_delta=timedelta(hours=8))
                 return {'message':"User Login","token":token},200
             else:
                 return {'message':"Wrong Credentials"},401
         return {'message':"User doesn't exist"},401
-
-# class UserLogoutAccess(Resource):
-#     def post(self):
-#         return {'message':"User Logout"}
-    
-# class TokenRefresh(Resource):
-#     def post(self):
-#         return {'message': 'Token refresh'}

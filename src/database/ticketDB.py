@@ -1,6 +1,9 @@
 import sqlite3
 from sqlite3 import Error
 from models.ticketsModel import Tickets
+from database.showsDB import ShowsDB
+from database.venueDB import VenueDB
+
 
 class TicketsDB:
     def create_ticketTable(self):
@@ -8,16 +11,18 @@ class TicketsDB:
                                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                                 user_id INTEGER NOT NULL,
                                 show_id INTEGER NOT NULL,
+                                venue_id INTEGER NOT NULL,
                                 numOfTickets INTEGER NOT NULL,
                                 FOREIGN KEY(user_id) REFERENCES users(user_id),
-                                FOREIGN KEY(show_id) REFERENCES shows(show_id)
+                                FOREIGN KEY(show_id) REFERENCES shows(show_id),
+                                FOREIGN KEY(venue_id) REFERENCES venues(venue_id)
         );'''
 
-         # CONNECTING THE DATABASE 
+        # CONNECTING THE DATABASE
         try:
             # connnect
-            conn =  sqlite3.connect("ticketProvider.db")
-            cur =  conn.cursor()
+            conn = sqlite3.connect("ticketProvider.db")
+            cur = conn.cursor()
             cur.execute(create_tickets_table)
             conn.commit()
         except Error as e:
@@ -26,44 +31,41 @@ class TicketsDB:
         finally:
             conn.close()
 
-    def create_trigger(self):
+    def create_triggers(self):
         # Connect to the database
         conn = sqlite3.connect('ticketProvider.db')
-
-        # Create the trigger
-        conn.execute('''
-            CREATE TRIGGER IF NOT EXISTS prevent_overbooking
-            BEFORE INSERT ON tickets
-            FOR EACH ROW
-            WHEN (
-                SELECT bookedSeats
-                FROM shows
-                WHERE show_id = NEW.show_id
-            ) >= (
-                SELECT capacity
-                FROM venues
-                WHERE venue_id = (
-                    SELECT venue_id
-                    FROM shows
-                    WHERE show_id = NEW.show_id
-                )
-            )
-            BEGIN
-                SELECT RAISE(ABORT, 'Cannot book more tickets than the venue capacity allows');
-            END;
-        ''')
-
+        conn.execute('''CREATE TRIGGER IF NOT EXISTS update_booked_seats
+                        AFTER INSERT ON tickets
+                        FOR EACH ROW
+                        BEGIN
+                            UPDATE shows
+                            SET bookedSeats = (
+                                SELECT SUM(numOfTickets)
+                                FROM tickets
+                                WHERE show_id = NEW.show_id
+                            )
+                            WHERE show_id = NEW.show_id;
+                    END;
+                    ''')
         # Commit the changes and close the connection
         conn.commit()
         conn.close()
 
-    def addTicket(self,ticket):
-        add_ticket_query = '''INSERT INTO tickets(user_id,show_id,numOfTickets) VALUES (?,?,?)'''
+    def addTicket(self, ticket):
+        # getting total number of bookedSeats already
+        bookedSeats = ShowsDB.getBookedSeats(show_id = ticket.show_id)
+
+        # TODO add venue_id to tickets table for easy access venue capacity
+        capacity = VenueDB.getVenueCapacity(venue_id=ticket.venue_id)
+        if int(bookedSeats)+int(ticket.numOfTickets) > int(capacity):
+            return None
+       # capacity = VenueDB.getVenueCapacity(venue_id=)
         try:
             # connnect
-            conn =  sqlite3.connect("ticketProvider.db")
-            cur =  conn.cursor()
-            cur.execute(add_ticket_query,ticket.returnSet())
+            conn = sqlite3.connect("ticketProvider.db")
+            cur = conn.cursor()
+            add_ticket_query = '''INSERT INTO tickets(user_id,show_id,venue_id,numOfTickets) VALUES (?,?,?,?)'''
+            cur.execute(add_ticket_query, ticket.returnSet())
             conn.commit()
             return cur.lastrowid
         except Error as e:
@@ -75,9 +77,24 @@ class TicketsDB:
     def getAllTickets(self):
         try:
             # connnect
-            conn =  sqlite3.connect("ticketProvider.db")
-            cur =  conn.cursor()
+            conn = sqlite3.connect("ticketProvider.db")
+            cur = conn.cursor()
             cur.execute("SELECT * FROM tickets")
+            rows = cur.fetchall()
+            return Tickets.fromList(listTickets=rows)
+        except Error as e:
+            print(e)
+            return None
+        finally:
+            cur.close()
+            conn.close()
+
+    def getAllTicketsByUserId(user_id):
+        try:
+            # connnect
+            conn = sqlite3.connect("ticketProvider.db")
+            cur = conn.cursor()
+            cur.execute("SELECT * FROM tickets WHERE user_id = ?",(user_id,))
             rows = cur.fetchall()
             return Tickets.fromList(listTickets=rows)
         except Error as e:

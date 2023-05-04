@@ -13,7 +13,9 @@ class UserDatabaseFunctions :
                             name TEXT NOT NULL,
                             username TEXT NOT NULL, 
                             password TEXT NOT NULL
-        );'''
+        );
+        PRAGMA foreign_keys = ON;
+        '''
         # CONNECTING THE DATABASE 
         try:
             # connnect

@@ -1,0 +1,11 @@
+{
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "driver": "SQLite",
+            "name": "ticketProvider",
+            "database": "${workspaceFolder:TicketProviderAPI}/src/ticketProvider.db"
+        }
+    ],
+    "sqltools.useNodeRuntime": true
+}

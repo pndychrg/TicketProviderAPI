@@ -20,15 +20,13 @@ class AddShow(Resource):
         
         # extracting Data
         data = parser.parse_args()
-        print(data,flush=True)
         new_show = Show(name=data['name'],rating=data['rating'],ticketPrice=data['ticketPrice'],bookedSeats=data['bookedSeats'],isFull=data['bookedSeats'],venue_id=data['venue_id'])
         id = showsDB.addShow(show=new_show)
-        print(id,flush=True)
         if id!=None:
-            return {'message':"Venue Added"}
+            return {'message':"Show Added"}
         return {'message':"Error Occured"},404
     
-#TODO get all shows by venue
+
 class GetAllShows(Resource):
     @jwt_required()
     def get(self):
@@ -37,3 +35,19 @@ class GetAllShows(Resource):
         for show in showsList :
             ret_Json.append(show.toJson())
         return ret_Json,200
+
+class GetShowsByVenueId(Resource):
+    @jwt_required()
+    def get(self):
+        # getting venueId through args
+        venue_id = request.args.get("venue_id")
+        if venue_id !=None:
+            showsList = showsDB.getShowByVenueId(venue_id=venue_id)
+            print(showsList,flush=True)
+            if len(showsList) > 0:
+                retJson = Show.returnJsonFromList(listShows = showsList)
+                return retJson, 200
+            else:
+                return {"message":"venue_id doesn't exist"},404
+        else:
+            return {"message":"venue_id not found"},404

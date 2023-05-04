@@ -15,4 +15,4 @@ def init_Database():
     showDatabaseFunctions.create_showTable()
     ticketDatabaseFunctions = TicketsDB()
     ticketDatabaseFunctions.create_ticketTable()
-    ticketDatabaseFunctions.create_trigger()
+    ticketDatabaseFunctions.create_triggers()

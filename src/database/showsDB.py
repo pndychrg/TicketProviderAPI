@@ -30,14 +30,14 @@ class ShowsDB:
         finally:
             conn.close()
 
-    def getShowByName(self,show_name):
+    def getShowByVenueId(self,venue_id):
         try:
             # connnect
             conn =  sqlite3.connect("ticketProvider.db")
             cur =  conn.cursor()
-            cur.execute("SELECT * FROM shows WHERE name = ?",(show_name,))
-            row = cur.fetchone()
-            return Show.fromArray(row=row)
+            cur.execute("SELECT * FROM shows WHERE venue_id = ?",(venue_id,))
+            rows = cur.fetchall()
+            return Show.fromList(listShows=rows)
         except Error as e:
             print(e)
             return None
@@ -74,4 +74,18 @@ class ShowsDB:
             cur.close()
             conn.close()
 
+    def getBookedSeats(show_id):
+        try:
+            #connect 
+            conn = sqlite3.connect("ticketProvider.db")
+            cur = conn.cursor()
+            cur.execute("SELECT bookedSeats FROM shows WHERE show_id = ?",(show_id,))
+            bookedSeats = cur.fetchone()[0]
+            return bookedSeats
+        except Error as e:
+            print(e)
+            return None
+        finally:
+            cur.close()
+            conn.close()
 

@@ -68,3 +68,18 @@ class VenueDB:
             cur.close()
             conn.close()
 
+    def getVenueCapacity(venue_id):
+        try:
+            # connnect
+            conn =  sqlite3.connect("ticketProvider.db")
+            cur =  conn.cursor()
+            cur.execute("SELECT capacity FROM venues WHERE venue_id = ?",(venue_id,))
+            capacity = cur.fetchone()[0]
+            return capacity
+        except Error as e:
+            print(e)
+            return None
+        finally:
+            cur.close()
+            conn.close()
+            

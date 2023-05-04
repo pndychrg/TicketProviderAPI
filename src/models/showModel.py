@@ -33,3 +33,9 @@ class Show:
             "isFull":self.isFull,
             "venue_id":self.venue_id
         }
+
+    def returnJsonFromList(listShows):
+        ret_ShowList = []
+        for show in listShows:
+            ret_ShowList.append(Show.toJson(show))
+        return ret_ShowList

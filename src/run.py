@@ -50,10 +50,13 @@ api.add_resource(GetAllVenue,'/venue/getAllVenues')
 from resources.show import *
 api.add_resource(AddShow,'/show/addShow')
 api.add_resource(GetAllShows,'/show/getAllShows')
+api.add_resource(GetShowsByVenueId,'/show/getShowsByVenueId')
+
 
 from resources.tickets import *
 api.add_resource(AddTicket,'/ticket/addTicket')
 api.add_resource(GetAllTickets,'/ticket/getAllTickets')
+api.add_resource(GetTicketsByUserId,'/ticket/getTicketsByUserId')
 
 if __name__ == "__main__":
     init_Database()
