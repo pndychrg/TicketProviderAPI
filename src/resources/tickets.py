@@ -48,3 +48,4 @@ class GetTicketsByUserId(Resource):
                 return ret_Json,200
             else:
                 return {"message":"user_id doesn't exist"}
+            

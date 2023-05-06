@@ -83,3 +83,17 @@ class VenueDB:
             cur.close()
             conn.close()
             
+    def deleteVenueByVenueId(venue_id):
+        sql = "DELETE FROM venues WHERE venue_id = ?"
+        try:
+            conn =  sqlite3.connect("ticketProvider.db")
+            cur =  conn.cursor()
+            cur.execute(sql,(venue_id,))
+            conn.commit()
+            return True
+        except Error as e:
+            print(e)
+            return False
+        finally:
+            cur.close()
+            conn.close()

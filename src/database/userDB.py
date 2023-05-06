@@ -14,14 +14,15 @@ class UserDatabaseFunctions :
                             username TEXT NOT NULL, 
                             password TEXT NOT NULL
         );
-        PRAGMA foreign_keys = ON;
         '''
+
         # CONNECTING THE DATABASE 
         try:
             # connnect
             conn =  sqlite3.connect("ticketProvider.db")
             cur =  conn.cursor()
             cur.execute(user_table_query)
+            cur.execute("PRAGMA foreign_keys = ON;")
             conn.commit()
         except Error as e:
             print(e)
@@ -72,3 +73,18 @@ class UserDatabaseFunctions :
         
         except Error as e:
             print(e)
+
+    def deleteUserByUserId(user_id):
+        sql = "DELETE FROM users WHERE user_id = ?"
+        try:
+            conn =  sqlite3.connect("ticketProvider.db")
+            cur =  conn.cursor()
+            cur.execute(sql,(user_id,))
+            conn.commit()
+            return True
+        except Error as e:
+            print(e)
+            return False
+        finally:
+            cur.close()
+            conn.close()

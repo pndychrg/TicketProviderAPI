@@ -33,3 +33,14 @@ class GetAllVenue(Resource):
         return ret_Json,200
 
 #TODO GET VENUE BY ID
+
+class DeleteVenueById(Resource):
+    @jwt_required()
+    def delete(self):
+        venue_id = request.args.get("venue_id")
+        if venue_id!=None:
+            result = VenueDB.deleteVenueByVenueId(venue_id=venue_id)
+            if result ==True:
+                return {'message':"Venue Deleted"},200
+        else:
+            return {"message":"venue_id not found"},404

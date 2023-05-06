@@ -43,6 +43,18 @@ class UserLogin(Resource):
                 return {'message':"Wrong Credentials"},401
         return {'message':"User doesn't exist"},401
     
+
+class DeleteUser(Resource):
+    def delete(self):
+        # getting user_id as a parameter
+        user_id = request.args.get("user_id")
+        if user_id !=None:
+            result = UserDatabaseFunctions.deleteUserByUserId(user_id = user_id)
+            if result ==True:
+                return {"message":"User Deleted"},200
+        else:
+            return {"message":"user_id not found"},404
+
 class UserLogoutAccess(Resource):
     def post(self):
         return {'message':"User Logout"}

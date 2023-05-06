@@ -51,3 +51,15 @@ class GetShowsByVenueId(Resource):
                 return {"message":"venue_id doesn't exist"},404
         else:
             return {"message":"venue_id not found"},404
+
+class DeleteShowByShowId(Resource):
+    @jwt_required()
+    def delete(self):
+        # getting the show_id 
+        show_id = request.args.get("show_id")
+        if show_id!=None:
+            result = ShowsDB.deleteShowByShowId(show_id=show_id)
+            if result ==True:
+                return {"message":"Show Deleted successfully"},200
+        else:
+            return {"message":"show_id not found"},401

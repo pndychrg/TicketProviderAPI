@@ -47,6 +47,13 @@ class TicketsDB:
                             WHERE show_id = NEW.show_id;
                     END;
                     ''')
+        conn.execute('''CREATE TRIGGER IF NOT EXISTS set_show_full AFTER INSERT ON tickets
+                    BEGIN
+                        UPDATE shows SET isFull = 1 WHERE
+                            show_id = NEW.show_id AND
+                            (SELECT SUM(numOfTickets) FROM tickets WHERE show_id = NEW.show_id) = 
+                            (SELECT capacity FROM venues WHERE venue_id = NEW.venue_id);
+                    END;''')
         # Commit the changes and close the connection
         conn.commit()
         conn.close()
@@ -103,3 +110,18 @@ class TicketsDB:
         finally:
             cur.close()
             conn.close()
+
+    # def deleteTicketByTicketId(ticket_id):
+    #     sql = "DELETE FROM tickets WHERE ticket_id = ?"
+    #     try:
+    #         conn =  sqlite3.connect("ticketProvider.db")
+    #         cur =  conn.cursor()
+    #         cur.execute(sql,(ticket_id,))
+    #         conn.commit()
+    #         return True
+    #     except Error as e:
+    #         print(e)
+    #         return False
+    #     finally:
+    #         cur.close()
+    #         conn.close()

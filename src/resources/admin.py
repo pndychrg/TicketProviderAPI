@@ -1,7 +1,7 @@
-from flask_restful import Resource,reqparse,abort,request
+from flask_restful import Resource,reqparse
 from models.adminModel import Admin
 from database.adminDB import AdminDB
-from flask import jsonify
+from flask_restful import request
 from flask_jwt_extended import create_access_token
 from datetime import timedelta
 
@@ -37,3 +37,15 @@ class AdminLogin(Resource):
             else:
                 return {'message':"Wrong Credentials"},401
         return {'message':"User doesn't exist"},401
+    
+class DeleteAdmin(Resource):
+    def delete(self):
+        # getting admin_id as a parameter
+        admin_id = request.args.get('admin_id')
+        if admin_id!=None:
+            result = AdminDB.deleteAdminByAdminId(admin_id=admin_id)
+            if result ==True:
+                return {"message":"Admin Deleted"},200
+        else:
+            return {'message':"admin_id not found"},404
+        
