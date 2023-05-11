@@ -58,7 +58,7 @@ api.add_resource(AddShow,'/show/addShow')
 api.add_resource(GetAllShows,'/show/getAllShows')
 api.add_resource(GetShowsByVenueId,'/show/getShowsByVenueId')
 api.add_resource(DeleteShowByShowId,'/show/deleteShow')
-
+api.add_resource(UpdateShowByShowId,'/show/updateShow')
 
 from resources.tickets import *
 api.add_resource(AddTicket,'/ticket/addTicket')

@@ -20,7 +20,7 @@ class AddShow(Resource):
         
         # extracting Data
         data = parser.parse_args()
-        new_show = Show(name=data['name'],rating=data['rating'],ticketPrice=data['ticketPrice'],bookedSeats=data['bookedSeats'],isFull=data['bookedSeats'],venue_id=data['venue_id'])
+        new_show = Show(name=data['name'],rating=data['rating'],ticketPrice=data['ticketPrice'],bookedSeats=data['bookedSeats'],isFull=data['isFull'],venue_id=data['venue_id'])
         id = showsDB.addShow(show=new_show)
         if id!=None:
             return {'message':"Show Added"}
@@ -62,4 +62,29 @@ class DeleteShowByShowId(Resource):
             if result ==True:
                 return {"message":"Show Deleted successfully"},200
         else:
-            return {"message":"show_id not found"},401
+            return {"message":"show_id not found"},404
+        
+class UpdateShowByShowId(Resource):
+    @jwt_required()
+    def put(self):
+        # getting the show id as a parameter
+        show_id = request.args.get("show_id")
+        #getting the show as a body
+        parser = reqparse.RequestParser()
+        parser.add_argument("name",help="This Field is mandatory",required = True)
+        parser.add_argument("rating",help="This Field is mandatory",required = True)
+        parser.add_argument("ticketPrice",help="This Field is mandatory",required = True)
+        parser.add_argument("bookedSeats",help="This Field is mandatory",required = True)
+        parser.add_argument("venue_id",help="This Field is mandatory",required = True)
+        # extracting Data
+        data = parser.parse_args()
+        new_show = Show(name=data['name'],rating=data['rating'],ticketPrice=data['ticketPrice'],bookedSeats=data['bookedSeats'],isFull=None,venue_id=data['venue_id'])
+        if show_id!=None:
+            result = ShowsDB.updateShowByShowId(show=new_show,show_id=show_id)
+            if result ==True:
+                return {"message":"Show Updated"},200
+            else:
+                return {"message":"Error occured"},404
+        else:
+            return {"message":"show_id not found"},404
+        

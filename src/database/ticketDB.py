@@ -62,7 +62,6 @@ class TicketsDB:
         # getting total number of bookedSeats already
         bookedSeats = ShowsDB.getBookedSeats(show_id = ticket.show_id)
 
-        # TODO add venue_id to tickets table for easy access venue capacity
         capacity = VenueDB.getVenueCapacity(venue_id=ticket.venue_id)
         if int(bookedSeats)+int(ticket.numOfTickets) > int(capacity):
             return None

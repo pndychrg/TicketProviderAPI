@@ -1,5 +1,6 @@
 import sqlite3
 from sqlite3 import Error
+from database.venueDB import VenueDB
 from models.showModel import Show
 
 class ShowsDB:
@@ -103,3 +104,28 @@ class ShowsDB:
         finally:
             cur.close()
             conn.close()
+
+    def updateShowByShowId(show,show_id):
+        sql = '''UPDATE shows
+                    SET name = ?,
+                    rating = ?,
+                    ticketPrice = ?,
+                    bookedSeats = ?
+                WHERE show_id = ?;
+                    '''
+        capacity = VenueDB.getVenueCapacity(venue_id=show.venue_id)
+        if int(show.bookedSeats) > int(capacity):
+            return False
+        try:
+            conn = sqlite3.connect("ticketProvider.db")
+            cur = conn.cursor()
+            cur.execute(sql,(show.name,show.rating,show.ticketPrice,show.bookedSeats,show_id))
+            conn.commit()
+            return True
+        except Error as e:
+            print(e)
+            return False
+        finally:
+            cur.close()
+            conn.close()
+
