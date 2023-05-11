@@ -1,6 +1,6 @@
 # TicketProviderAPI
 
-## Installation
+## Installation and Running
 
 To set up the project from the GitHub repository, follow these steps:
 
