@@ -44,3 +44,26 @@ class DeleteVenueById(Resource):
                 return {'message':"Venue Deleted"},200
         else:
             return {"message":"venue_id not found"},404
+    
+class UpdateVenueByeVenueId(Resource):
+    @jwt_required()
+    def put(self):
+        # getting venue_id as a parameter
+        venue_id = request.args.get("venue_id")
+        # getting updated venue details in body
+        parser = reqparse.RequestParser()
+        parser.add_argument('name',help='This Field is mandatory',required = True)
+        parser.add_argument('place',help="This Field is mandatory",required = True)
+        parser.add_argument('capacity',help="This Field is mandatory",required = True)
+        
+        # extracting data
+        data = parser.parse_args()
+        new_venue = Venue(name=data['name'],place=data['place'],capacity=data['capacity'])
+        if venue_id !=None:
+            result = VenueDB.updateVenueByVenueId(venue=new_venue,venue_id=venue_id)
+            if result == True:
+                return {"message":"Venue Updated"},200
+            else:
+                {"message":"Error Occured"},404
+        else:
+            return {"message":"venue_id not found"},404

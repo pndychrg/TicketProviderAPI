@@ -4,8 +4,6 @@ import os
 from models.userModel import User
 
 class UserDatabaseFunctions :
-    
-
     # create User Table
     def createUserTable(self):
         user_table_query = '''CREATE TABLE IF NOT EXISTS users (
@@ -80,6 +78,25 @@ class UserDatabaseFunctions :
             conn =  sqlite3.connect("ticketProvider.db")
             cur =  conn.cursor()
             cur.execute(sql,(user_id,))
+            conn.commit()
+            return True
+        except Error as e:
+            print(e)
+            return False
+        finally:
+            cur.close()
+            conn.close()
+
+    def updateUserByUserId(user,user_id):
+        sql = '''UPDATE users
+            SET name = ?,
+            username = ?
+            WHERE user_id = ?;
+            '''
+        try:
+            conn = sqlite3.connect("ticketProvider.db")
+            cur = conn.cursor()
+            cur.execute(sql,(user.name,user.username,user_id))
             conn.commit()
             return True
         except Error as e:

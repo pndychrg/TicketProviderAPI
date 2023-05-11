@@ -97,3 +97,22 @@ class VenueDB:
         finally:
             cur.close()
             conn.close()
+
+    def updateVenueByVenueId(venue,venue_id):
+        sql = '''UPDATE venues 
+                SET name = ?,
+                    place = ?,
+                    capacity = ?
+                WHERE venue_id = ?'''
+        try:
+            conn = sqlite3.connect("ticketProvider.db")
+            cur = conn.cursor()
+            cur.execute(sql,(venue.name,venue.place, venue.capacity,venue_id))
+            conn.commit()
+            return True
+        except Error as e:
+            print(e)
+            return False
+        finally:
+            cur.close()
+            conn.close()

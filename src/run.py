@@ -31,13 +31,14 @@ jwt = JWTManager(app)
 # app.register_blueprint(swaggerui_blueprint)
 # #Now point your browser to localhost:5000/api/docs/
 
-import views
+# import views
 
 api = Api(app)
 from resources.user import *
 api.add_resource(UserLogin,'/login')
 api.add_resource(UserRegistration,'/register')
 api.add_resource(DeleteUser,'/delete')
+api.add_resource(UpdateUserByUserId,'/update')
 api.add_resource(UserLogoutAccess,'/logout')
 api.add_resource(TokenRefresh,'/token/refresh')
 
@@ -49,13 +50,14 @@ api.add_resource(DeleteAdmin,'/admin/delete')
 from resources.venue import *
 api.add_resource(AddVenue,'/venue/addVenue')
 api.add_resource(GetAllVenue,'/venue/getAllVenues')
-api.add_resource(DeleteVenueById,'/venue/delete')
+api.add_resource(DeleteVenueById,'/venue/deleteVenue')
+api.add_resource(UpdateVenueByeVenueId,'/venue/updateVenue')
 
 from resources.show import *
 api.add_resource(AddShow,'/show/addShow')
 api.add_resource(GetAllShows,'/show/getAllShows')
 api.add_resource(GetShowsByVenueId,'/show/getShowsByVenueId')
-api.add_resource(DeleteShowByShowId,'/show/delete')
+api.add_resource(DeleteShowByShowId,'/show/deleteShow')
 
 
 from resources.tickets import *
