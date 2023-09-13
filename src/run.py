@@ -2,6 +2,7 @@ from flask import Flask
 from flask_jwt_extended import JWTManager
 from flask_restful import Api
 from database.db import init_Database
+from flask_cors import CORS
 # from flask_swagger_ui import get_swaggerui_blueprint
 
 # SWAGGER_URL = '/api/docs'  # URL for exposing Swagger UI (without trailing '/')
@@ -11,6 +12,7 @@ from database.db import init_Database
 app = Flask(__name__)
 app.config['JWT_SECRET_KEY']="flask_api_for_ticket_provider"
 jwt = JWTManager(app)
+CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}})
 
 # swaggerui_blueprint = get_swaggerui_blueprint(
 #     SWAGGER_URL,  # Swagger UI static files will be mapped to '{SWAGGER_URL}/dist/'
@@ -65,6 +67,14 @@ api.add_resource(AddTicket,'/ticket/addTicket')
 api.add_resource(GetAllTickets,'/ticket/getAllTickets')
 api.add_resource(GetTicketsByUserId,'/ticket/getTicketsByUserId')
 
+@app.after_request
+def after_request(response):
+  response.headers.add('Access-Control-Allow-Origin', '*')
+  response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
+  response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE')
+  return response
+
+
 if __name__ == "__main__":
     init_Database()
-    app.run(debug=True)
+    app.run(host='127.0.0.1',port=8080,debug=True)

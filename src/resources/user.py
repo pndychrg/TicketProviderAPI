@@ -1,3 +1,5 @@
+import json
+from flask import jsonify
 from flask_jwt_extended import create_access_token, jwt_required
 from flask_restful import Resource,reqparse,abort,request
 from models.userModel import User
@@ -9,18 +11,38 @@ userDatabaseFunctions = UserDatabaseFunctions()
 
 
 class UserRegistration(Resource):
+    def options(self):
+        response = jsonify({'message': 'Preflight request accepted.'})
+        #response.headers['Access-Control-Allow-Origin'] = 'http://localhost:3000'
+        response.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, DELETE'
+        response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization'
+        return response
     def post(self):
-        # parser for registration
-        parser = reqparse.RequestParser()
-        parser.add_argument('name',help='This field cannot be blank',required = True)
-        parser.add_argument('username',help='This field cannot be blank',required = True)
-        parser.add_argument('password',help='This field cannot be blank',required = True)
+        # # parser for registration
+        # parser = reqparse.RequestParser()
+        # parser.add_argument('name',help='This field cannot be blank',required = True)
+        # parser.add_argument('username',help='This field cannot be blank',required = True)
+        # parser.add_argument('password',help='This field cannot be blank',required = True)
 
-        data = parser.parse_args()
+        # data = parser.parse_args()
+        data = request.get_json()
+        if isinstance(data, str):
+            # If the data is a string, attempt to parse it as JSON
+            try:
+                data = json.loads(data)
+            except json.JSONDecodeError:
+                return {'message': 'Invalid JSON data in the request body'}, 400
+
+        print(data,flush=True)
+        if 'name' not in data or 'username' not in data or 'password' not in data:
+            return {'message': 'Missing required fields in the request body'}, 400
+        print(data["name"],flush=True)
         new_user = User(name=data['name'],username=data['username'],password=data['password'])
         id = userDatabaseFunctions.add_User(user=new_user)
         if id != False:
-            return {"message":"User Registered","id":id}
+            return {"message":"User Registered","id":id}, 200
+            # , {'Access-Control-Allow-Origin': 'http://localhost:3000'}
+           # return json.dumps("User Registered"),200
         return {'message':"User already Exists"},400
         
 class UserLogin(Resource):
