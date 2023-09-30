@@ -24,10 +24,12 @@ class AdminRegistration(Resource):
         # parser.add_argument('username',help='This field cannot be blank',required = True)
         # parser.add_argument('password',help='This field cannot be blank',required = True)
         # data = parser.parse_args()
-        try:
-            data = json.loads(data)
-        except json.JSONDecodeError:
-            return {'message': 'Invalid JSON data in the request body'}, 400
+        data = request.get_json()
+        print("data first ",data,flush=True)
+        # try:
+        #     data = json.loads(data)
+        # except json.JSONDecodeError:
+        #     return {'message': 'Invalid JSON data in the request body'}, 400
         if "username" not in data or "password" not in data:
             return {'message':'Invalid JSON '},400
         print(data,flush=True)
