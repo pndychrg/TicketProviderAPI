@@ -53,13 +53,13 @@ class UserLogin(Resource):
         # parser.add_argument('password',help='This field cannot be blank',required = True)
         # data = parser.parse_args()
         data = request.get_json()
-        # if isinstance(data, str):
-        #     # If the data is a string, attempt to parse it as JSON
-        #     try:
-        #         data = json.loads(data)
-        #     except json.JSONDecodeError:
-        #         return {'message': 'Invalid JSON data in the request body'}, 400
-        data = json.load(data)
+        if isinstance(data, str):
+            # If the data is a string, attempt to parse it as JSON
+            try:
+                data = json.loads(data)
+            except json.JSONDecodeError:
+                return {'message': 'Invalid JSON data in the request body'}, 400
+        # data = json.load(data)
         if "username" not in data or "password" not in data:
             return {'message': 'Missing required fields in the request body'}, 400
         print(data,flush=True)
@@ -67,6 +67,7 @@ class UserLogin(Resource):
         if user_db != None:
             if(user_db.username==data['username'] and user_db.password==data['password']):
                 token = create_access_token(identity=data['username'],expires_delta=timedelta(hours=8))
+                print(token,flush=True)
                 return {'message':"User Login","token":token},200
             else:
                 return {'message':"Wrong Credentials"},401

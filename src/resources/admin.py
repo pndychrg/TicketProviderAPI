@@ -4,18 +4,30 @@ from database.adminDB import AdminDB
 from flask_restful import request
 from flask_jwt_extended import create_access_token
 from datetime import timedelta
+from flask import jsonify
+import json
 
 # initiating userDatabseFunctions
 adminDatabaseFunctions = AdminDB()
 
 
 class AdminRegistration(Resource):
+    def options(self):
+        response = jsonify({'message': 'Preflight request accepted.'})
+        #response.headers['Access-Control-Allow-Origin'] = 'http://localhost:3000'
+        response.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, DELETE'
+        response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization'
+        return response
     def post(self):
         # parser for registration
-        parser = reqparse.RequestParser()
-        parser.add_argument('username',help='This field cannot be blank',required = True)
-        parser.add_argument('password',help='This field cannot be blank',required = True)
-        data = parser.parse_args()
+        # parser = reqparse.RequestParser()
+        # parser.add_argument('username',help='This field cannot be blank',required = True)
+        # parser.add_argument('password',help='This field cannot be blank',required = True)
+        # data = parser.parse_args()
+        try:
+            data = json.loads(data)
+        except json.JSONDecodeError:
+            return {'message': 'Invalid JSON data in the request body'}, 400
         new_admin = Admin(username=data['username'],password=data['password'])
         id = adminDatabaseFunctions.add_Admin(admin=new_admin)
         if id != False:
@@ -25,10 +37,18 @@ class AdminRegistration(Resource):
 class AdminLogin(Resource):
     def post(self):
         # parser for login
-        parser = reqparse.RequestParser()
-        parser.add_argument('username',help='This field cannot be blank',required = True)
-        parser.add_argument('password',help='This field cannot be blank',required = True)
-        data = parser.parse_args()
+        # parser = reqparse.RequestParser()
+        # parser.add_argument('username',help='This field cannot be blank',required = True)
+        # parser.add_argument('password',help='This field cannot be blank',required = True)
+        # data = parser.parse_args()
+
+        if isinstance(data, str):
+            # If the data is a string, attempt to parse it as JSON
+            try:
+                data = json.loads(data)
+            except json.JSONDecodeError:
+                return {'message': 'Invalid JSON data in the request body'}, 400
+
         admin_db = adminDatabaseFunctions.get_AdminbyUsername(username= data['username'])
         if admin_db != None:
             if(admin_db.username==data['username'] and admin_db.password==data['password']):
