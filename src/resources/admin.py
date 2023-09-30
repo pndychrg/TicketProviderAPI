@@ -53,8 +53,6 @@ class AdminLogin(Resource):
         # parser.add_argument('username',help='This field cannot be blank',required = True)
         # parser.add_argument('password',help='This field cannot be blank',required = True)
         # data = parser.parse_args()
-
-
         data = request.get_json()
         if isinstance(data, str):
             # If the data is a string, attempt to parse it as JSON
