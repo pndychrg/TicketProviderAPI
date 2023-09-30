@@ -67,6 +67,7 @@ class UserLogin(Resource):
         if user_db != None:
             if(user_db.username==data['username'] and user_db.password==data['password']):
                 token = create_access_token(identity=data['username'],expires_delta=timedelta(hours=8))
+                
                 return {'message':"User Login","token":token},200
             else:
                 return {'message':"Wrong Credentials"},401
