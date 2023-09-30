@@ -12,28 +12,8 @@ from flask_cors import CORS
 app = Flask(__name__)
 app.config['JWT_SECRET_KEY']="flask_api_for_ticket_provider"
 jwt = JWTManager(app)
-CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}})
+CORS(app, resources={r"/*": {"origins": "http://localhost:3000/"}})
 
-# swaggerui_blueprint = get_swaggerui_blueprint(
-#     SWAGGER_URL,  # Swagger UI static files will be mapped to '{SWAGGER_URL}/dist/'
-#     API_URL,
-#     config={  # Swagger UI config overrides
-#         'app_name': "Test application"
-#     },
-#     # oauth_config={  # OAuth config. See https://github.com/swagger-api/swagger-ui#oauth2-configuration .
-#     #    'clientId': "your-client-id",
-#     #    'clientSecret': "your-client-secret-if-required",
-#     #    'realm': "your-realms",
-#     #    'appName': "your-app-name",
-#     #    'scopeSeparator': " ",
-#     #    'additionalQueryStringParams': {'test': "hello"}
-#     # }
-# )
-
-# app.register_blueprint(swaggerui_blueprint)
-# #Now point your browser to localhost:5000/api/docs/
-
-# import views
 
 api = Api(app)
 from resources.user import *
@@ -72,9 +52,10 @@ def after_request(response):
   response.headers.add('Access-Control-Allow-Origin', '*')
   response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
   response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE')
+  print("origin added",flush=True)
   return response
 
 
 if __name__ == "__main__":
     init_Database()
-    app.run(host='127.0.0.1',port=5000,debug=True)
+    app.run(host='127.0.0.1',port=8080,debug=True)

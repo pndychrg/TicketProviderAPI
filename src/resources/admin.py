@@ -26,10 +26,11 @@ class AdminRegistration(Resource):
         # data = parser.parse_args()
         data = request.get_json()
         print("data first ",data,flush=True)
-        # try:
-        #     data = json.loads(data)
-        # except json.JSONDecodeError:
-        #     return {'message': 'Invalid JSON data in the request body'}, 400
+        if isinstance(data,str):
+            try:
+                data = json.loads(data)
+            except json.JSONDecodeError:
+                return {'message': 'Invalid JSON data in the request body'}, 400
         if "username" not in data or "password" not in data:
             return {'message':'Invalid JSON '},400
         print(data,flush=True)
@@ -40,6 +41,12 @@ class AdminRegistration(Resource):
         return {'message':"Admin already Exists"},400
         
 class AdminLogin(Resource):
+    def options(self):
+        response = jsonify({'message': 'Preflight request accepted.'})
+        #response.headers['Access-Control-Allow-Origin'] = 'http://localhost:3000'
+        response.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, DELETE'
+        response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization'
+        return response
     def post(self):
         # parser for login
         # parser = reqparse.RequestParser()
@@ -47,12 +54,17 @@ class AdminLogin(Resource):
         # parser.add_argument('password',help='This field cannot be blank',required = True)
         # data = parser.parse_args()
 
+
+        data = request.get_json()
         if isinstance(data, str):
             # If the data is a string, attempt to parse it as JSON
             try:
                 data = json.loads(data)
             except json.JSONDecodeError:
                 return {'message': 'Invalid JSON data in the request body'}, 400
+        
+        if "username" not in data or "password" not in data:
+            return {'message':'Invalid JSON '},400
 
         admin_db = adminDatabaseFunctions.get_AdminbyUsername(username= data['username'])
         if admin_db != None:
